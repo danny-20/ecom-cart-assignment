@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import Home from "./components/Home/Home";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+import Category from "./pages/Category";
+import Checkout from "./pages/Checkout";
+import { createContext, useEffect, useState } from "react";
+import productsData from "./data/products.json";
+import categoriesData from "./data/categories.json";
+
+const CategoryContext = createContext();
+const ProductContext = createContext();
 
 function App() {
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    setProducts(productsData);
+    setCategories(categoriesData);
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <CategoryContext.Provider value={categories}>
+        <ProductContext.Provider value={products}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/category/:id" element={<Category />} />
+            <Route path="/checkout" element={<Checkout />} />
+          </Routes>
+        </ProductContext.Provider>
+      </CategoryContext.Provider>
+    </BrowserRouter>
   );
 }
 
 export default App;
+export { ProductContext, CategoryContext };
